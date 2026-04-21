@@ -4,6 +4,7 @@ from dynamic_array import DynamicArray
 from product import Product
 
 class Inventory:
+    
 
     '''
  %  This function should create a Product object for each product represented
@@ -23,8 +24,12 @@ class Inventory:
         # Store products in a private DynamicArray member
         self._products: DynamicArray = DynamicArray(dtype=ctypes.py_object)
         
+        for i in range(len(product_names)):
+            product = Product(product_names[i], stocks[i], prices[i])
+            self._products.insert_last(product)
+
         # Logic to iterate through arguments and insert_last into self._products
-        pass
+        
 
     '''
     ## Dynamic Array helper functions. These three functions will be how you interface
@@ -36,7 +41,7 @@ class Inventory:
     This method should return the total number of products in the inventory.
     '''
     def get_total_products(self) -> int:
-        pass
+        return len(self._products)
 
     '''
     This method should return the Product indexed by i in the dynamic array.
@@ -46,7 +51,11 @@ class Inventory:
     copy of the product, but the Product itself (i.e. don't allocate new memory)
     '''
     def get_product(self,i: int) -> Optional[Product]:
-        pass
+        if self.get_total_products() == 0:
+            return None
+        if i < 0 or i >= self.get_total_products():
+            return None
+        return self._products[i]
 
     '''
     This method should assign the value of the input Product "product"
@@ -56,7 +65,10 @@ class Inventory:
     and exit. 
     '''
     def set_product(self, i: int, product: Product) -> None:
-        pass
+        if i < 0 or i >= self.get_total_products():
+            print("Error: out of range!")
+            exit()
+        self._products[i] = product
 
     '''
     *** Below here you are not to access self._products dynamic array directly ***
@@ -76,7 +88,17 @@ class Inventory:
     the array. If the _products list is emtpy, it should return None.
     '''
     def find_max_price(self) -> Optional[Product]:
-        pass
+        if self.get_total_products() == 0:
+            return None
+
+        max_product = self.get_product(0)
+
+        for i in range(1, self.get_total_products()):
+            current_product = self.get_product(i)
+            if current_product.price > max_product.price:
+                max_product = current_product
+
+        return max_product
 
     '''
     This function should return the product in a given Inventory object with
@@ -92,7 +114,17 @@ class Inventory:
     If the _products array is empty, it should return None
     '''
     def find_max_investment(self) -> Optional[Product]:
-        pass
+        if self.get_total_products() == 0:
+            return None
+
+        max_product = self.get_product(0)
+
+        for i in range(1, self.get_total_products()):
+            current_product = self.get_product(i)
+            if current_product.price * current_product.stock > max_product.price * max_product.stock:
+                max_product = current_product
+
+        return max_product
 
     '''
     This function should sort the products stored in a dynamic array by
@@ -107,14 +139,31 @@ class Inventory:
           don't use python's built-in sort method. 
     '''
     def sort_by_stock(self) -> None:
-        pass
+        n = self.get_total_products()
+
+        for i in range(n):
+            for j in range(0, n - i - 1):
+                product1 = self.get_product(j)
+                product2 = self.get_product(j + 1)
+
+                if product1.stock > product2.stock:
+                    self.set_product(j, product2)
+                    self.set_product(j + 1, product1)
 
 
     '''
     This function should return string containing a comma-separated list of all products
     '''
     def __str__(self) -> str:
-        return ""
+        result = ""
+
+        for i in range(self.get_total_products()):
+            result += str(self.get_product(i))
+            if i != self.get_total_products() - 1:
+                result += ", "
+        
+        return result
+
 
 if __name__ == "__main__":
     names = ["apples", "soup", "milk", "tofu", "poptarts", "lightbulbs", "soda", "chips"]
