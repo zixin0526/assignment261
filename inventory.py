@@ -160,7 +160,7 @@ class Inventory:
         for i in range(self.get_total_products()):
             result += str(self.get_product(i))
             if i != self.get_total_products() - 1:
-                result += ", "
+                result += "\n"
         
         return result
 
